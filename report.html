@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Report - Subscription Manager Agent (T4)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #1e293b;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #1e3a8a;
+            margin: 0 0 4px 0;
+            font-size: 22pt;
+        }
+        .header h3 {
+            color: #475569;
+            margin: 0;
+            font-weight: 400;
+            font-size: 13pt;
+        }
+        .team-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 10.5pt;
+        }
+        .team-table th, .team-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .team-table th {
+            background-color: #2563eb;
+            color: white;
+            font-weight: 600;
+        }
+        .team-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .github-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 5px solid #2563eb;
+            padding: 10px 16px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 10.5pt;
+        }
+        .github-box a {
+            color: #1d4ed8;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        h2 {
+            color: #1e40af;
+            border-bottom: 1.5px solid #cbd5e1;
+            padding-bottom: 4px;
+            margin-top: 22px;
+            margin-bottom: 12px;
+            font-size: 15pt;
+        }
+        ul, ol {
+            padding-left: 20px;
+            margin-top: 6px;
+            margin-bottom: 10px;
+        }
+        li {
+            margin-bottom: 4px;
+        }
+        .code-block {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            padding: 10px 14px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 9.5pt;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+        .diagram-container {
+            background-color: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 18px 0;
+            text-align: center;
+        }
+        .diagram-title {
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 11pt;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .workflow-flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .node-box {
+            background-color: #ffffff;
+            border: 2px solid #3b82f6;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 10pt;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-width: 220px;
+        }
+        .node-box.highlight {
+            background-color: #dbeafe;
+            border-color: #2563eb;
+        }
+        .node-box.success {
+            background-color: #dcfce7;
+            border-color: #16a34a;
+            color: #14532d;
+        }
+        .node-box.memory {
+            background-color: #fef3c7;
+            border-color: #d97706;
+            color: #78350f;
+        }
+        .arrow-down {
+            font-size: 14pt;
+            color: #64748b;
+            line-height: 1;
+        }
+        .tools-split {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+        .tool-node {
+            background-color: #f1f5f9;
+            border: 1.5px dashed #64748b;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-family: 'Consolas', monospace;
+            font-size: 9pt;
+            color: #334155;
+            flex: 1;
+            max-width: 200px;
+        }
+        .scenario-card {
+            background-color: #fafafa;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #10b981;
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 4px;
+            font-size: 10pt;
+        }
+        .scenario-title {
+            font-weight: bold;
+            color: #065f46;
+            font-size: 10.5pt;
+            margin-bottom: 4px;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 8.5pt;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>PROJECT REPORT: SUBSCRIPTION MANAGER AGENT (T4)</h1>
+        <h3>Autonomous Financial Assistant & Budget Optimization System</h3>
+    </div>
+
+    <div class="github-box">
+        <strong>🔗 Project Repository:</strong> 
+        <a href="https://github.com/NagaChaitanya5143/subscription_manager" target="_blank">
+            https://github.com/NagaChaitanya5143/subscription_manager
+        </a>
+    </div>
+
+    <h2>👨‍💻 Group Project Credentials</h2>
+    <table class="team-table">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Student 1 (Team Lead)</th>
+                <th>Student 2 (Co-Developer)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Full Name</strong></td>
+                <td><strong>K. Naga Chaitanya</strong></td>
+                <td><strong>V. Sai Tanmai</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Registration Number</strong></td>
+                <td><code>12308076</code></td>
+                <td><code>12319651</code></td>
+            </tr>
+            <tr>
+                <td><strong>Roll Number</strong></td>
+                <td><code>9</code></td>
+                <td><code>60</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>1. Executive Summary & Objective</h2>
+    <p>
+        The <strong>Subscription Manager Agent</strong> is an intelligent financial assistant designed to tackle personal finance challenges such as subscription creep, unmonitored recurring renewals, and budget overruns. Built using the <strong>LLaMA 3.1 8B Instruct</strong> model via the <strong>NVIDIA NIM API</strong>, the agent manages recurring services, computes real-time monthly and annual financial metrics, maintains persistent memory across multi-turn interactions, and autonomously recommends optimal cancellation strategies when user budget limits are exceeded.
+    </p>
+
+    <h2>2. System Architecture & Workflow Diagram</h2>
+    <p>
+        The system executes a deterministic <strong>Plan-Act-Observe Loop</strong> where natural language user queries trigger tool calling, state updates, and budget evaluations:
+    </p>
+
+    <!-- Visual Workflow Diagram -->
+    <div class="diagram-container">
+        <div class="diagram-title">System Workflow & Decision Architecture</div>
+        <div class="workflow-flex">
+            <div class="node-box">👤 User Interaction / Goal Input</div>
+            <div class="arrow-down">↓</div>
+            <div class="node-box highlight">🤖 SubscriptionAgent (LLaMA 3.1 8B Instruct)</div>
+            <div class="arrow-down">↓</div>
+            <div class="tools-split">
+                <div class="tool-node">add_subscription(name, cost, renewal_date)</div>
+                <div class="tool-node">get_monthly_total()</div>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="node-box memory">💾 Persistent State Memory Store (dict)</div>
+            <div class="arrow-down">↓</div>
+            <div class="node-box">⚖️ Autonomous Budget Evaluation Engine</div>
+            <div class="arrow-down">↓</div>
+            <div class="tools-split">
+                <div class="tool-node" style="border-color:#16a34a; background:#f0fdf4;">Monthly Spend &le; Budget<br><strong>Report Totals</strong></div>
+                <div class="tool-node" style="border-color:#dc2626; background:#fef2f2;">Monthly Spend &gt; Budget<br><strong>Generate Cancellation Strategy</strong></div>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="node-box success">📊 Final Agent Response & Renewal Advice</div>
+        </div>
+    </div>
+
+    <h2>3. Key Features & Capabilities</h2>
+    <ul>
+        <li><strong>Dual Tool Integration:</strong> Integrates <code>add_subscription(name, cost, renewal_date)</code> to register services with sanitized pricing, and <code>get_monthly_total()</code> to query totals.</li>
+        <li><strong>Persistent State Memory:</strong> Remembers active subscriptions across multi-turn queries, eliminating stateless arithmetic hallucinations.</li>
+        <li><strong>Yearly Cost View & Renewal Reminders:</strong> Generates annual expenditure projections (12 &times; monthly cost) along with renewal dates.</li>
+        <li><strong>Autonomous Budget Overage Resolution:</strong> Automatically calculates optimal non-essential subscription cancellation plans to restore budget balance whenever budget thresholds are breached.</li>
+    </ul>
+
+    <h2>4. Implementation Workflow & System Development</h2>
+    <ol>
+        <li><strong>Project Architecture & Modular Design:</strong> Designed a modular agentic framework separating LLM logic (<code>agent.py</code>), tool execution and state memory (<code>tools.py</code>), test verification (<code>main.py</code>), and interactive CLI (<code>interactive.py</code>).</li>
+        <li><strong>Environment & Dependency Setup:</strong> Configured Python 3.11 runtime environment and integrated core libraries (<code>openai</code> Python SDK and <code>httpx</code> truststore) for secure API transport.</li>
+        <li><strong>LLM Tool-Calling Optimization:</strong> Adapted function calling mechanics for LLaMA 3.1 8B on NVIDIA NIM API to ensure precise turn-by-turn tool execution and response parsing.</li>
+        <li><strong>Version Control & Collaboration:</strong> Managed codebase using Git and deployed to GitHub for collaborative development.</li>
+    </ol>
+
+    <h2>5. Test Scenarios & Experimental Verification</h2>
+
+    <div class="scenario-card">
+        <div class="scenario-title">Scenario 1: Initial Subscriptions Within Budget</div>
+        <p><strong>Input Prompt:</strong> "Add Netflix for $15 renewing on the 5th, and Spotify for $10 renewing on the 20th. My monthly budget is $40."</p>
+        <p><strong>Execution:</strong> Called <code>add_subscription</code> for Netflix ($15) and Spotify ($10), followed by <code>get_monthly_total</code>.</p>
+        <p><strong>Result:</strong> Monthly Total: <strong>$25.00</strong> | Yearly Total: <strong>$300.00</strong> (Safely within $40 budget).</p>
+    </div>
+
+    <div class="scenario-card">
+        <div class="scenario-title">Scenario 2: Budget Overflow & Cancellation Suggestion</div>
+        <p><strong>Input Prompt:</strong> "Add Gym Membership for $50 renewing on the 1st. My budget is $50. Check if I'm over budget and suggest what to cancel to get back under."</p>
+        <p><strong>Execution:</strong> Added Gym ($50). Monthly total reached <strong>$75.00</strong> ($25 over budget).</p>
+        <p><strong>Result:</strong> Agent identified Gym Membership ($50) as over budget and suggested canceling it to bring monthly spending back to $25.00.</p>
+    </div>
+
+    <div class="scenario-card">
+        <div class="scenario-title">Scenario 3: Multi-Turn Memory & Complex Optimization</div>
+        <p><strong>Input Prompt:</strong> "Also add Disney+ for $14 renewing on the 12th. Show my total, yearly cost, renewal reminders, and best cancellation plan for my $50 budget."</p>
+        <p><strong>Execution:</strong> Added Disney+ ($14). Total monthly spend reached <strong>$89.00</strong> (Yearly: <strong>$1,068.00</strong>).</p>
+        <p><strong>Result:</strong> Agent formulated the optimal cancellation strategy: Cancel Gym Membership ($50) and Netflix ($15) to reduce total spending to <strong>$24.00/month</strong>, safely under the $50 budget.</p>
+    </div>
+
+    <h2>6. How to Run & Verify Project</h2>
+    <p>To run the project on any environment, clone the GitHub repository and execute:</p>
+    <div class="code-block">
+# 1. Clone Repository & Navigate to Directory
+git clone https://github.com/NagaChaitanya5143/subscription_manager.git
+cd subscription_manager
+
+# 2. Run Automated Test Suite
+python main.py
+
+# 3. Run Interactive Live Chat Mode
+python interactive.py
+    </div>
+
+    <div class="footer">
+        Subscription Manager Agent (T4) Report &bull; K. Naga Chaitanya (12308076) & V. Sai Tanmai (12319651)
+    </div>
+
+</body>
+</html>

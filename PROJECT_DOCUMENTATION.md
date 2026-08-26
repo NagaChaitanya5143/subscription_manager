@@ -20,6 +20,55 @@ The **Subscription Manager Agent** is an autonomous financial assistant designed
 
 ---
 
+## ⚙️ System Architecture & Workflow Diagram
+
+```
++-----------------------------------------------------------------------------------+
+|                            USER INPUT / GOAL PROMPT                               |
++----------------------------------------+------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|               SubscriptionAgent Engine (LLaMA 3.1 8B Instruct)                     |
++----------------------------------------+------------------------------------------+
+                                         |
+         +-------------------------------+-------------------------------+
+         | Tool Call Execution                                           | Tool Call Execution
+         v                                                               v
++------------------------------------+                         +--------------------+
+| add_subscription(name, cost, date) |                         | get_monthly_total()|
++------------------+-----------------+                         +---------+----------+
+                   |                                                     |
+                   +-------------------------------+---------------------+
+                                                   |
+                                                   v
++-----------------------------------------------------------------------------------+
+|                       PERSISTENT STATE MEMORY (dict)                              |
++----------------------------------------+------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|                     AUTONOMOUS BUDGET EVALUATION ENGINE                           |
++----------------------------------------+------------------------------------------+
+                                         |
+              +--------------------------+--------------------------+
+              | Spend <= Budget                                     | Spend > Budget
+              v                                                     v
++------------------------------------+             +--------------------------------+
+|       Report Monthly & Yearly      |             | Generate Optimal Cancellation  |
+|             Totals                 |             |          Strategy              |
++-----------------+------------------+             +----------------+---------------+
+                  |                                                 |
+                  +--------------------------+----------------------+
+                                             |
+                                             v
++-----------------------------------------------------------------------------------+
+|                        FORMATTED AGENT RESPONSE TO USER                           |
++-----------------------------------------------------------------------------------+
+```
+
+---
+
 ## 💡 Problem Statement & Solution
 
 ### The Challenge
@@ -50,18 +99,6 @@ Rather than operating as a simple stateless chat interface, the **Subscription M
 
 ### 4. Smart Budget Overage & Cancellation Optimization
 - When total monthly spend exceeds the user's defined budget, the agent analyzes active subscriptions and calculates the minimal or highest-cost non-essential cancellation plan to bring spending back under budget.
-
----
-
-## 🏗️ System Architecture & Technology Stack
-
-| Component | Specification |
-| :--- | :--- |
-| **Language Model** | `meta/llama-3.1-8b-instruct` |
-| **API Provider** | NVIDIA NIM API (`https://integrate.api.nvidia.com/v1`) |
-| **Programming Language** | Python 3.11 |
-| **Client Library** | `openai` Python SDK (with `httpx` & `truststore`) |
-| **Version Control** | Git & GitHub |
 
 ---
 
