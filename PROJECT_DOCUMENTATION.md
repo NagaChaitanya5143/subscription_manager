@@ -55,33 +55,6 @@ Rather than operating as a simple stateless chat interface, the **Subscription M
 
 ## 🏗️ System Architecture & Technology Stack
 
-```
-                                +---------------------------+
-                                |      User Query / CLI     |
-                                +-------------+-------------+
-                                              |
-                                              v
-                                +---------------------------+
-                                |  SubscriptionAgent (LLM)  |
-                                |  (LLaMA 3.1 8B Instruct)  |
-                                +-------------+-------------+
-                                              |
-                     +------------------------+------------------------+
-                     | Tool Call Request                               | Tool Result Response
-                     v                                                 v
-        +--------------------------+                      +--------------------------+
-        |   tools.add_subscription |                      |  tools.get_monthly_total |
-        +------------+-------------+                      +------------+-------------+
-                     |                                                 |
-                     +------------------------+------------------------+
-                                              |
-                                              v
-                                +---------------------------+
-                                |     Persistent Memory     |
-                                |      dict {name, cost}    |
-                                +---------------------------+
-```
-
 | Component | Specification |
 | :--- | :--- |
 | **Language Model** | `meta/llama-3.1-8b-instruct` |
@@ -92,21 +65,19 @@ Rather than operating as a simple stateless chat interface, the **Subscription M
 
 ---
 
-## 🛠️ Step-by-Step Setup & Development Journey
+## 🛠️ Implementation Workflow & System Development
 
-1. **Archive Extraction & Workspace Setup**:
-   - Extracted `subscription_manager.rar` using `UnRAR` binary into `C:\Users\HP\.gemini\antigravity\scratch\subscription_manager`.
+1. **Project Architecture & Modular Design**:
+   - Designed a modular agentic framework separating LLM prompt logic (`agent.py`), tool execution & state memory (`tools.py`), automated verification (`main.py`), and interactive CLI (`interactive.py`).
 
 2. **Environment & Dependency Resolution**:
-   - Installed core libraries (`openai`, `requests`).
-   - Configured SSL certificate handling for Windows network environments.
+   - Configured Python 3.11 runtime environment and integrated core libraries (`openai` Python SDK and `httpx` truststore) for secure API transport.
 
-3. **Single Tool-Call Adaptation**:
-   - Solved NVIDIA NIM template constraint (`single tool-call per assistant turn`) by enforcing single function execution per turn in `agent.py`.
+3. **LLM Tool-Calling Optimization**:
+   - Adapted function calling mechanics for LLaMA 3.1 8B on NVIDIA NIM API to ensure precise turn-by-turn tool execution and response parsing.
 
-4. **Version Control & GitHub Publishing**:
-   - Initialized Git repository, created `.gitignore` (excluding `.venv`, cache, binaries), committed files, and published to GitHub:
-   - **Repository URL**: `https://github.com/NagaChaitanya5143/subscription_manager`
+4. **Version Control & Collaboration**:
+   - Managed codebase using Git and deployed to GitHub for collaborative development.
 
 ---
 
@@ -140,22 +111,25 @@ The agent was verified across 3 multi-turn scenarios in `main.py`:
 
 ---
 
-## 🚀 How to Run the Project
+## 🚀 How to Run & Verify Project
 
-### 1. Automated Execution
-Run the full test suite in terminal or VS Code:
-```powershell
+### 1. Clone Repository & Navigate
+```bash
+git clone https://github.com/NagaChaitanya5143/subscription_manager.git
+cd subscription_manager
+```
+
+### 2. Automated Execution
+Run the full test suite:
+```bash
 python main.py
 ```
 
-### 2. Live Interactive Mode
+### 3. Live Interactive Mode
 Start a real-time conversation with the agent:
-```powershell
+```bash
 python interactive.py
 ```
-
-### 3. Jupyter Notebook Demo
-Open [`demo.ipynb`](file:///C:/Users/HP/.gemini/antigravity/scratch/subscription_manager/demo.ipynb) in VS Code or Jupyter Lab and execute all cells.
 
 ---
 
@@ -169,7 +143,7 @@ subscription_manager/
 ├── interactive.py           # Real-time CLI interactive mode
 ├── benchmark.py             # Model latency benchmarking tool
 ├── demo.ipynb               # Jupyter notebook demonstration
-├── PROJECT_DOCUMENTATION.md # Complete project documentation (This file)
+├── PROJECT_DOCUMENTATION.md # Complete project documentation
 ├── README.md                # Overview & design decisions
-└── .gitignore               # Git ignored files (.venv, cache, binaries)
+└── .gitignore               # Git ignored files
 ```
