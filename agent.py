@@ -14,15 +14,14 @@ llm = ChatOpenAI(
     api_key="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",
     model="openai/gpt-oss-20b",
     temperature=0.0,
-    max_tokens=300
+    max_tokens=160
 ).bind_tools(list(TOOL_MAP.values()))
 
 SYSTEM_PROMPT = (
-    "You are a Financial Subscription Manager Agent.\n"
-    "1. Use `add_subscription` for new subscriptions.\n"
-    "2. Use `get_monthly_total` to inspect active subscriptions and totals.\n"
-    "3. If total exceeds budget, suggest which subscription(s) to cancel.\n"
-    "4. Include renewal-date reminders and the yearly-cost view in the final response."
+    "You are a Subscription Manager Agent. "
+    "Use `add_subscription` for new subscriptions, then `get_monthly_total` to inspect totals. "
+    "If over budget, suggest what to cancel. "
+    "Always give a short, concise response with monthly total, yearly total, and renewal reminders."
 )
 
 class SubscriptionAgent:
