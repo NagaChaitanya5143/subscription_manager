@@ -8,38 +8,29 @@ An honest failure encountered during development was that the model initially at
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ Architecture & Flow
 
 ```mermaid
 flowchart TD
-    User([👤 User Goal / Multi-turn Prompt]) --> Agent[🤖 SubscriptionAgent]
-    
-    subgraph Agentic Plan-Act Loop
-        Agent --> LLM[🧠 LLM / ChatOpenAI]
-        LLM -- Decides Tool Calls --> Dispatcher{⚙️ Tool Dispatcher}
-        
-        Dispatcher -->|Add / Update| Tool1["🛠️ add_subscription(name, cost, renewal_date)"]
-        Dispatcher -->|Calculate Totals| Tool2["🛠️ get_monthly_total()"]
-        
-        Tool1 --> Store[(💾 Persistent Memory Store)]
-        Tool2 --> Store
-        
-        Tool1 -. "Execution Result" .-> Agent
-        Tool2 -. "Totals + Yearly View" .-> Agent
-        
-        Agent -- "Observation & Feedback" --> LLM
+    User([👤 User Request]) --> Agent[🤖 Subscription Agent]
+
+    subgraph Memory_And_Tools [" "]
+        Agent -->|1. Invoke Tool| Tools["🛠️ Tools (add_subscription & get_monthly_total)"]
+        Tools -->|2. Update & Query| Memory[(💾 Persistent Memory)]
+        Memory -->|3. Return Active State| Agent
     end
-    
-    LLM -- "Over Budget?" --> Reasoner["💡 Budget Optimization Reasoner\n(Selects Subscriptions to Cancel)"]
-    Reasoner --> Output([📊 Final Response\nMonthly Total + Yearly View + Renewal Reminders + Advice])
-    LLM -- "Within Budget" --> Output
+
+    Agent --> Decision{Over Budget?}
+    Decision -->|Yes| Cancel["💡 Suggest Cancellations to Restore Budget"]
+    Decision -->|No| OK["✅ Confirm Headroom & Renewal Reminders"]
+
+    Cancel --> Response([📊 Final Response: Monthly & Yearly Cost + Renewals + Advice])
+    OK --> Response
 ```
 
-### Architectural Components
-
-1. **Agent Controller (`agent.py`)**: Implements the LangChain-powered plan-act loop. It binds tools, manages message history across multi-turn interactions, executes tool invocations, and handles observation feedback.
-2. **Tools Layer (`tools.py`)**:
-   - `add_subscription(name, cost, renewal_date)`: Sanitizes input costs and registers services into memory.
-   - `get_monthly_total()`: Reads active state, computes monthly total, and calculates the 12-month annualized projection.
-3. **Memory Store**: In-memory persistent dictionary retaining subscription records and renewal dates across conversational turns.
-4. **Agentic Reasoner**: When spending exceeds the user-defined budget limit, the agent reasons over active subscriptions and formulates strategic cancellation suggestions to restore budget balance.
+### ⚡ Flash Summary:
+1. **User Request** $\rightarrow$ User adds subscriptions or sets a budget.
+2. **Plan-Act Loop** $\rightarrow$ Agent executes `add_subscription` & calls `get_monthly_total`.
+3. **Memory Store** $\rightarrow$ Remembers all active subscriptions across multi-turn sessions.
+4. **Agentic Decision** $\rightarrow$ If spending exceeds budget, it calculates and recommends optimal cancellations.
+5. **Output** $\rightarrow$ Delivers monthly total, yearly cost projection, renewal-date reminders, and action plan.
