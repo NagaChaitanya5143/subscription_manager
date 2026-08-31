@@ -1,97 +1,53 @@
 """
-Subscription Manager Agent powered by LLaMA 3.1 8B on NVIDIA NIM API.
+Subscription Manager Agent built with LangChain.
+Utilizes ChatOpenAI, tool binding, and typed messages for a minimal agent loop.
 """
 
-import json
-from openai import OpenAI
-import tools
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
+from tools import add_subscription, get_monthly_total
 
-client = OpenAI(
+TOOL_MAP = {t.name: t for t in [add_subscription, get_monthly_total]}
+
+llm = ChatOpenAI(
     base_url="https://integrate.api.nvidia.com/v1",
-    api_key="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"
+    api_key="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",
+    model="openai/gpt-oss-20b",
+    temperature=0.0,
+    max_tokens=300
+).bind_tools(list(TOOL_MAP.values()))
+
+SYSTEM_PROMPT = (
+    "You are a Financial Subscription Manager Agent.\n"
+    "1. Use `add_subscription` for new subscriptions.\n"
+    "2. Use `get_monthly_total` to inspect active subscriptions and totals.\n"
+    "3. If total exceeds budget, suggest which subscription(s) to cancel.\n"
+    "4. Include renewal-date reminders and the yearly-cost view in the final response."
 )
-MODEL = "meta/llama-3.1-8b-instruct"
-
-TOOLS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "add_subscription",
-            "description": "Add a subscription with name, monthly cost, and optional renewal date.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string"},
-                    "cost": {"type": "number"},
-                    "renewal_date": {"type": "string"}
-                },
-                "required": ["name", "cost"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_monthly_total",
-            "description": "Get all active subscriptions, monthly total, and yearly total.",
-            "parameters": {"type": "object", "properties": {}}
-        }
-    }
-]
-
-TOOL_MAP = {
-    "add_subscription": tools.add_subscription,
-    "get_monthly_total": tools.get_monthly_total
-}
 
 class SubscriptionAgent:
     def __init__(self):
-        self.messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You are a Subscription Manager Agent. "
-                    "Use add_subscription for new subscriptions, then get_monthly_total to check totals. "
-                    "If total exceeds the budget, suggest which subscription(s) to cancel. "
-                    "Always include monthly total, yearly total, and renewal dates in your reply."
-                )
-            }
-        ]
+        self.messages = [SystemMessage(content=SYSTEM_PROMPT)]
 
     def run(self, user_goal: str):
         print(f"\n{'='*65}\n[USER]: {user_goal}\n{'='*65}")
-        self.messages.append({"role": "user", "content": user_goal})
+        self.messages.append(HumanMessage(content=user_goal))
 
         while True:
-            response = client.chat.completions.create(
-                model=MODEL,
-                messages=self.messages,
-                tools=TOOLS,
-                temperature=0.0,
-                max_tokens=300,
-                parallel_tool_calls=False
-            )
-            msg = response.choices[0].message
+            msg = llm.invoke(self.messages)
+            self.messages.append(msg)
 
-            if msg.tool_calls:
-                self.messages.append(msg)
-                for tool_call in msg.tool_calls:
-                    fn_name = tool_call.function.name
-                    args = json.loads(tool_call.function.arguments) if tool_call.function.arguments else {}
-
-                    # Sanitize cost in case model passes a string like "$15"
-                    if fn_name == "add_subscription" and "cost" in args:
-                        args["cost"] = float(str(args["cost"]).replace("$", "").strip())
-
-                    result = TOOL_MAP[fn_name](**args)
-                    print(f" -> [TOOL CALL] {fn_name}({args}) => {result}")
-
-                    self.messages.append({
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "content": str(result)
-                    })
-            else:
-                self.messages.append(msg)
-                print(f"\n[AGENT RESPONSE]:\n{msg.content}\n")
+            if not msg.tool_calls:
+                safe_text = msg.content.encode("ascii", "ignore").decode("ascii") if msg.content else ""
+                print(f"\n[AGENT RESPONSE]:\n{safe_text}\n")
                 return msg.content
+
+            for tc in msg.tool_calls:
+                clean_name = tc["name"].split("<|")[0].split("(")[0].strip()
+                tool_func = TOOL_MAP.get(clean_name)
+                if tool_func:
+                    result = tool_func.invoke(tc["args"])
+                else:
+                    result = f"Error: Tool '{clean_name}' not found."
+                print(f" -> [TOOL CALL] {clean_name}({tc['args']}) => {result}")
+                self.messages.append(ToolMessage(tool_call_id=tc["id"], content=str(result)))
