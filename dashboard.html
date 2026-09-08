@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Manager Agent - Interactive Dashboard</title>
+    <!-- Tailwind CSS for sleek UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .gradient-header { background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); }
+        .card-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 pb-12">
+
+    <!-- Top Navigation Header -->
+    <header class="gradient-header text-white py-6 px-8 shadow-lg">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-md">
+                        <i class="fa-solid fa-wallet text-2xl text-blue-200"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight">Subscription Manager Agent</h1>
+                        <p class="text-blue-100 text-sm">Autonomous Financial Assistant & Budget Optimization System (T4)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Group Student Badge -->
+            <div class="bg-white/10 border border-white/20 rounded-xl p-3 text-xs backdrop-blur-md flex flex-wrap gap-4">
+                <div>
+                    <span class="text-blue-200 block">Student 1 (Lead)</span>
+                    <strong class="text-white text-sm">K. Naga Chaitanya</strong> (12308076 / Roll 9)
+                </div>
+                <div class="border-l border-white/20 pl-4">
+                    <span class="text-blue-200 block">Student 2 (Co-Dev)</span>
+                    <strong class="text-white text-sm">V. Sai Tanmai</strong> (12319651 / Roll 60)
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Top Metrics Cards & Budget Bar -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Monthly Spend</span>
+                    <h3 id="monthly-spend" class="text-2xl font-bold text-slate-800">$0.00</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Yearly Forecast</span>
+                    <h3 id="yearly-spend" class="text-2xl font-bold text-slate-800">$0.00</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Monthly Budget</span>
+                    <h3 id="budget-display" class="text-2xl font-bold text-slate-800">$50.00</h3>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 card-shadow flex flex-col justify-center">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Budget Utilization</span>
+                    <span id="budget-percent" class="text-xs font-bold text-emerald-600">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                    <div id="budget-progress-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Column Section: Form & Subscriptions -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Control Form -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 card-shadow space-y-6">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <i class="fa-solid fa-plus-circle text-blue-600 text-lg"></i>
+                    <h2 class="text-lg font-bold text-slate-800">Add Subscription</h2>
+                </div>
+
+                <form id="add-sub-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Service Name</label>
+                        <input type="text" id="sub-name" placeholder="e.g. Netflix, Spotify, Gym" required
+                            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Monthly Cost ($)</label>
+                        <input type="number" id="sub-cost" step="0.01" placeholder="15.00" required
+                            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Renewal Date</label>
+                        <input type="text" id="sub-date" placeholder="e.g. 5th of month" value="5th of month"
+                            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Monthly Budget Limit ($)</label>
+                        <input type="number" id="budget-input" step="1" value="50"
+                            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    </div>
+
+                    <div class="pt-2 flex gap-3">
+                        <button type="submit" 
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl text-sm transition-all shadow-md shadow-blue-200 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Add Service
+                        </button>
+                        <button type="button" id="reset-btn"
+                            class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 rounded-xl text-sm transition-all">
+                            Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Active Subscriptions & AI Agent Analysis -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Active Subscriptions List -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 card-shadow space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-blue-600 text-lg"></i>
+                            <h2 class="text-lg font-bold text-slate-800">Active Subscriptions</h2>
+                        </div>
+                        <span id="sub-count-badge" class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">0 Services</span>
+                    </div>
+
+                    <div id="subscriptions-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Dynamic Subscriptions Cards Insertion -->
+                        <div class="col-span-2 py-8 text-center text-slate-400">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                            No active subscriptions added yet. Use the form on the left to add subscriptions.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Agent Recommendation Box -->
+                <div id="ai-agent-box" class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-2xl card-shadow space-y-3">
+                    <div class="flex items-center gap-2 text-blue-400 font-bold text-sm uppercase tracking-wider">
+                        <i class="fa-solid fa-robot text-lg"></i>
+                        <span>AI Agent Financial Recommendation</span>
+                    </div>
+                    <div id="ai-agent-response" class="text-slate-200 text-sm leading-relaxed">
+                        Add your subscriptions and budget to see the AI agent's autonomous cancellation strategy and budget analysis.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // State
+        let subscriptions = [];
+        let budget = 50.00;
+
+        // Elements
+        const form = document.getElementById('add-sub-form');
+        const nameInput = document.getElementById('sub-name');
+        const costInput = document.getElementById('sub-cost');
+        const dateInput = document.getElementById('sub-date');
+        const budgetInput = document.getElementById('budget-input');
+        const resetBtn = document.getElementById('reset-btn');
+
+        const monthlySpendEl = document.getElementById('monthly-spend');
+        const yearlySpendEl = document.getElementById('yearly-spend');
+        const budgetDisplayEl = document.getElementById('budget-display');
+        const budgetPercentEl = document.getElementById('budget-percent');
+        const progressBarEl = document.getElementById('budget-progress-bar');
+        const container = document.getElementById('subscriptions-container');
+        const subCountBadge = document.getElementById('sub-count-badge');
+        const aiResponseEl = document.getElementById('ai-agent-response');
+
+        function updateUI() {
+            budget = parseFloat(budgetInput.value) || 50.00;
+            const monthlyTotal = subscriptions.reduce((sum, item) => sum + item.cost, 0);
+            const yearlyTotal = monthlyTotal * 12;
+
+            monthlySpendEl.textContent = `$${monthlyTotal.toFixed(2)}`;
+            yearlySpendEl.textContent = `$${yearlyTotal.toFixed(2)}`;
+            budgetDisplayEl.textContent = `$${budget.toFixed(2)}`;
+
+            // Budget Progress
+            const percent = budget > 0 ? Math.min(Math.round((monthlyTotal / budget) * 100), 100) : 0;
+            budgetPercentEl.textContent = `${percent}%`;
+            progressBarEl.style.width = `${percent}%`;
+
+            if (monthlyTotal > budget) {
+                progressBarEl.className = 'bg-rose-500 h-3 rounded-full transition-all duration-500';
+                budgetPercentEl.className = 'text-xs font-bold text-rose-600';
+            } else {
+                progressBarEl.className = 'bg-emerald-500 h-3 rounded-full transition-all duration-500';
+                budgetPercentEl.className = 'text-xs font-bold text-emerald-600';
+            }
+
+            // Cards
+            subCountBadge.textContent = `${subscriptions.length} Service${subscriptions.length === 1 ? '' : 's'}`;
+
+            if (subscriptions.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 py-8 text-center text-slate-400">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2 block"></i>
+                        No active subscriptions added yet. Use the form on the left to add subscriptions.
+                    </div>
+                `;
+            } else {
+                container.innerHTML = subscriptions.map((sub, index) => `
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-slate-800">${sub.name}</div>
+                            <div class="text-xs text-slate-500 mt-0.5">
+                                <i class="fa-regular fa-clock mr-1"></i>Renews on ${sub.renewal}
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold text-blue-600 text-lg">$${sub.cost.toFixed(2)}</span>
+                            <button onclick="removeSub(${index})" class="text-slate-400 hover:text-rose-500 transition-colors p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // AI Recommendation Engine
+            if (subscriptions.length === 0) {
+                aiResponseEl.innerHTML = "Add your subscriptions to see the AI agent's budget analysis and cancellation recommendations.";
+            } else if (monthlyTotal <= budget) {
+                aiResponseEl.innerHTML = `
+                    <div class="flex items-center gap-2 text-emerald-400 font-bold mb-1">
+                        <i class="fa-solid fa-circle-check"></i> Within Budget Status
+                    </div>
+                    Your total monthly expenditure of <strong>$${monthlyTotal.toFixed(2)}</strong> ($${yearlyTotal.toFixed(2)}/year) is safely within your monthly budget of <strong>$${budget.toFixed(2)}</strong>. No subscription cancellations are recommended.
+                `;
+            } else {
+                const over = monthlyTotal - budget;
+                // Sort by highest cost
+                const sorted = [...subscriptions].sort((a, b) => b.cost - a.cost);
+                let current = monthlyTotal;
+                const toCancel = [];
+
+                for (let sub of sorted) {
+                    if (current > budget) {
+                        toCancel.push(sub);
+                        current -= sub.cost;
+                    }
+                }
+
+                aiResponseEl.innerHTML = `
+                    <div class="flex items-center gap-2 text-rose-400 font-bold mb-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Budget Violation Detected!
+                    </div>
+                    Your monthly spend of <strong>$${monthlyTotal.toFixed(2)}</strong> exceeds your <strong>$${budget.toFixed(2)}</strong> budget by <strong class="text-rose-300">$${over.toFixed(2)}</strong>.
+                    <div class="mt-3 bg-white/10 p-3 rounded-xl">
+                        <strong class="text-blue-300 block mb-1">🤖 AI Recommended Cancellation Strategy:</strong>
+                        <ul class="list-disc list-inside text-xs space-y-1">
+                            ${toCancel.map(c => `<li>Cancel <strong>${c.name}</strong> ($${c.cost.toFixed(2)}/mo)</li>`).join('')}
+                        </ul>
+                        <div class="mt-2 text-xs text-slate-300">
+                            Canceling these services brings your new monthly total to <strong class="text-emerald-300">$${current.toFixed(2)}</strong>, restoring budget balance.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            const cost = parseFloat(costInput.value);
+            const date = dateInput.value.trim() || '1st of month';
+
+            if (name && !isNaN(cost)) {
+                subscriptions.push({ name, cost, renewal: date });
+                nameInput.value = '';
+                costInput.value = '';
+                dateInput.value = '5th of month';
+                updateUI();
+            }
+        });
+
+        budgetInput.addEventListener('input', updateUI);
+
+        resetBtn.addEventListener('click', () => {
+            subscriptions = [];
+            budgetInput.value = '50';
+            updateUI();
+        });
+
+        function removeSub(index) {
+            subscriptions.splice(index, 1);
+            updateUI();
+        }
+
+        // Initialize with default sample items for demo
+        subscriptions = [
+            { name: 'Netflix', cost: 15.00, renewal: '5th of month' },
+            { name: 'Spotify', cost: 10.00, renewal: '20th of month' }
+        ];
+        updateUI();
+    </script>
+</body>
+</html>

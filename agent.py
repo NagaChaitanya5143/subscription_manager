@@ -9,14 +9,11 @@ from openai import OpenAI
 import tools
 
 # API Key & Model Configuration
-API_KEY = os.getenv("NVIDIA_API_KEY", os.getenv("OPENAI_API_KEY", "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"))
+API_KEY = os.getenv("NVIDIA_API_KEY") or os.getenv("OPENAI_API_KEY")
 BASE_URL = os.getenv("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
 MODEL = os.getenv("LLM_MODEL", "mistralai/mistral-7b-instruct-v0.3")
 
-client = OpenAI(
-    base_url=BASE_URL,
-    api_key=API_KEY
-)
+client = OpenAI(base_url=BASE_URL, api_key=API_KEY) if API_KEY else None
 
 TOOLS = [
     {
@@ -113,6 +110,9 @@ class SubscriptionAgent:
     def run(self, user_goal: str):
         print(f"\n{'='*65}\n[USER]: {user_goal}\n{'='*65}")
         self.messages.append({"role": "user", "content": user_goal})
+
+        if client is None:
+            return self._fallback_run(user_goal)
 
         try:
             while True:

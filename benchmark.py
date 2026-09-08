@@ -3,15 +3,20 @@ Benchmark the fastest models on NVIDIA NIM API.
 Tests small/fast models with a simple tool-calling prompt and measures latency.
 """
 
-import requests
+import os
 import time
 
-API_KEY = "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"
-BASE_URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+import requests
+
+API_KEY = os.getenv("NVIDIA_API_KEY") or os.getenv("OPENAI_API_KEY") or ""
+BASE_URL = os.getenv("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1/chat/completions")
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json"
 }
+
+if not API_KEY:
+    raise RuntimeError("Set NVIDIA_API_KEY or OPENAI_API_KEY before running the benchmark.")
 
 # Candidates: small/fast models (avoid 70B+ for speed)
 MODELS = [
@@ -43,7 +48,7 @@ for model in MODELS:
     }
     try:
         start = time.time()
-        r = requests.post(BASE_URL, headers=HEADERS, json=payload, timeout=12, verify=False)
+        r = requests.post(BASE_URL, headers=HEADERS, json=payload, timeout=12)
         elapsed = round(time.time() - start, 2)
         if r.status_code == 200:
             reply = r.json()["choices"][0]["message"]["content"].strip()
