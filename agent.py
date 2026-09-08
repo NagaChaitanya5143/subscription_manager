@@ -8,6 +8,19 @@ import re
 from openai import OpenAI
 import tools
 
+# Auto-load .env file if available
+if os.path.exists(".env"):
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        with open(".env", "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip().strip("'\""))
+
 # API Key & Model Configuration
 API_KEY = os.getenv("NVIDIA_API_KEY") or os.getenv("OPENAI_API_KEY")
 BASE_URL = os.getenv("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
